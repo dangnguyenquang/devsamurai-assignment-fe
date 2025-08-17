@@ -20,39 +20,32 @@
 1. **Requirements:**
    - Node.js >= 16.x
    - npm >= 8.x
+  
+2. **Configure Environment Variables**
 
-2. **Install dependencies:**
+   Create a `.env` file based on the sample and fill in your database, JWT, and other configuration details.
+   
+   ```env
+   
+   VITE_PUBLIC_BACKEND_URL=http://localhost:3000/api/v1
+   
+   ```
+
+3. **Install dependencies:**
    ```sh
    npm install
    ```
 
-3. **Run development server:**
+4. **Run development server:**
    ```sh
    npm run dev
    ```
    The app will be available at [http://localhost:5173](http://localhost:5173) (or the port specified by Vite).
 
-4. **Build for production:**
+5. **Build for production:**
    ```sh
    npm run build
    ```
-
-5. **Run lint:**
-   ```sh
-   npm run lint
-   ```
-
-## Testing
-
-- **Manual testing:** Access features such as registration, login, dashboard, and charts to verify functionality.
-- **Automated testing:** (If available) Run:
-  ```sh
-  npm test
-  ```
-  or
-  ```sh
-  npm run test
-  ```
 
 ## Assumptions
 
