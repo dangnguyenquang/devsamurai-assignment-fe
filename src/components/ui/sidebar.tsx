@@ -1,7 +1,8 @@
+"use client"
+
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
-import { cva } from "class-variance-authority"
-import type { VariantProps } from "class-variance-authority"
+import { cva, type VariantProps } from "class-variance-authority"
 import { PanelLeftIcon } from "lucide-react"
 
 import { useIsMobile } from "@/hooks/use-mobile"
@@ -27,8 +28,8 @@ import {
 const SIDEBAR_COOKIE_NAME = "sidebar_state"
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
 const SIDEBAR_WIDTH = "14rem"
-const SIDEBAR_WIDTH_MOBILE = "18rem"
-const SIDEBAR_WIDTH_ICON = "3rem"
+const SIDEBAR_WIDTH_MOBILE = "14rem"
+const SIDEBAR_WIDTH_ICON = "4rem"
 const SIDEBAR_KEYBOARD_SHORTCUT = "b"
 
 type SidebarContextProps = {
@@ -198,7 +199,7 @@ function Sidebar({
             <SheetTitle>Sidebar</SheetTitle>
             <SheetDescription>Displays the mobile sidebar.</SheetDescription>
           </SheetHeader>
-          <div className="flex h-full w-full flex-col">{children}</div>
+          <div className="flex h-full w-full flex-col bg-white">{children}</div>
         </SheetContent>
       </Sheet>
     )
@@ -243,7 +244,7 @@ function Sidebar({
         <div
           data-sidebar="sidebar"
           data-slot="sidebar-inner"
-          className="bg-sidebar group-data-[variant=floating]:border-sidebar-border flex h-full w-full flex-col group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:shadow-sm"
+          className="bg-sidebar group-data-[variant=floating]:border-sidebar-border bg-white flex h-full w-full flex-col group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:shadow-sm"
         >
           {children}
         </div>
