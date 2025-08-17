@@ -1,4 +1,4 @@
-import * as React from "react"
+import * as React from "react";
 
 import {
   SidebarGroup,
@@ -6,31 +6,43 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
-import type { NavItem } from "@/types/sidebar"
+} from "@/components/ui/sidebar";
+import { MessageCircle, Plus } from "lucide-react";
 
 export function NavSecondary({
-  items,
   ...props
-}: {
-  items: NavItem[]
-} & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
+}: {} & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
   return (
     <SidebarGroup {...props}>
       <SidebarGroupContent className="px-2.5">
         <SidebarMenu>
-          {items.map((item) => (
-            <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton asChild size="default" className="cursor-pointer">
-                <a href={item.url}>
-                  <item.icon />
-                  <span>{item.title}</span>
-                </a>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              size="default"
+              className="cursor-pointer"
+            >
+              <a href="#">
+                <Plus />
+                <span>Invite member</span>
+              </a>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              size="default"
+              className="cursor-pointer"
+            >
+              <a href="#">
+                <MessageCircle />
+                <span>Feedback</span>
+              </a>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>
-  )
+  );
 }
