@@ -1,8 +1,6 @@
 /// <reference types="vite-plugin-svgr/client" />
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Card,
   CardContent,
@@ -10,14 +8,82 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { Mail, Lock, EyeOff, Eye } from "lucide-react";
-import { useState } from "react";
+import { Mail, Info, Loader2 } from "lucide-react";
 import Logo from "@/assets/icons/logo.svg?react";
 import Google from "@/assets/icons/google.svg?react";
 import Microsoft from "@/assets/icons/microsoft.svg?react";
+import FormInput from "@/components/forms/FormInput";
+import PasswordInput from "@/components/forms/PasswordInput";
+import { Alert, AlertTitle } from "@/components/ui/alert";
+import { useForm } from "react-hook-form";
+import { loginSchema, type LoginFormData } from "@/lib/validations/auth";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "react-router";
+import useApi from "@/hooks/useApi";
+import { authService } from "@/services/authService";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "@/stores";
+import { loginSuccess } from "@/features/auth/authSlice";
+import httpClient from "@/lib/http/httpClient";
 
 export default function LoginPage() {
-  const [showPassword, setShowPassword] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+    setError,
+    clearErrors,
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    mode: "onChange",
+  });
+  const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
+
+  const { loading, execute: executeRegister } = useApi(() =>
+    authService.login({
+      email: watch("email"),
+      password: watch("password"),
+    })
+  );
+
+  const onSubmit = async (data: LoginFormData) => {
+    clearErrors();
+
+    const response = await executeRegister();
+
+    if (!response.success) {
+      if (response.errors && Object.keys(response.errors).length > 0) {
+        Object.entries(response.errors).forEach(([field, messages]) => {
+          if (field in data) {
+            setError(field as keyof LoginFormData, {
+              type: "server",
+              message: messages[0],
+            });
+          }
+        });
+      } else if (response.message) {
+        console.log("Server error:", response.message);
+        setError("root", {
+          type: "server",
+          message: response.message,
+        });
+      }
+      return;
+    }
+
+    dispatch(
+      loginSuccess({
+        user: response.data?.user ?? null,
+        token: response.data?.access_token ?? "",
+      })
+    );
+
+    httpClient.setAuthToken(response.data?.access_token ?? "");
+
+    navigate("/");
+  };
 
   return (
     <div className="mx-auto w-full min-w-[320px] space-y-6 py-12 max-w-sm">
@@ -34,7 +100,7 @@ export default function LoginPage() {
       </div>
 
       {/* Card */}
-      <Card className="gap-0 border-transparent dark:border-border w-[400px] px-4 py-2 bg-white shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]">
+      <Card className="gap-0 border-transparent dark:border-border   px-4 py-2 bg-white shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]">
         <CardHeader className="flex flex-col space-y-1.5 p-6 gap-0">
           <CardTitle className="font-semibold tracking-tight text-base lg:text-lg">
             Sign in to your account
@@ -45,53 +111,49 @@ export default function LoginPage() {
         </CardHeader>
 
         <CardContent className="p-6 pt-0 flex flex-col gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                id="email"
-                type="email"
-                placeholder="you@example.com"
-                className="pl-8"
-                maxLength={225}
-              />
-            </div>
-          </div>
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="flex flex-col gap-4"
+          >
+            <FormInput
+              id="email"
+              label="Email"
+              type="email"
+              placeholder="you@example.com"
+              icon={<Mail className="h-4 w-4" />}
+              {...register("email")}
+              error={errors.email?.message}
+            />
 
-          <div className="space-y-2">
-            <div className="flex justify-between items-center">
-              <Label htmlFor="password">Password</Label>
-              <a href="#" className="line-block text-sm underline">
-                Forgot password?
-              </a>
-            </div>
-            <div className="relative">
-              <Lock className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+            <PasswordInput
+              id="password"
+              label="Password"
+              placeholder="********"
+              {...register("password")}
+              error={errors.password?.message}
+              isLoginForm
+            />
 
-              <Input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                placeholder="********"
-                className="pl-8 pr-8"
-                maxLength={225}
-              />
+            {errors.root && (
+              <Alert variant="destructive" className="bg-red-100">
+                <Info className="text-accent-foreground" />
+                <AlertTitle className="text-accent-foreground font-medium">
+                  {errors.root.message}
+                </AlertTitle>
+              </Alert>
+            )}
 
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-2 top-2.5 text-muted-foreground cursor-pointer hover:text-accent-foreground hover:bg-accent"
-              >
-                {showPassword ? (
-                  <EyeOff className="h-4 w-4" />
-                ) : (
-                  <Eye className="h-4 w-4" />
-                )}
-              </button>
-            </div>
-          </div>
-
-          <Button className="w-full">Sign in</Button>
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Sign in...
+                </>
+              ) : (
+                "Sign in"
+              )}
+            </Button>
+          </form>
 
           <p className="flex items-center gap-x-3 text-sm text-muted-foreground before:h-px before:flex-1 before:bg-border after:h-px after:flex-1 after:bg-border">
             Or continue with

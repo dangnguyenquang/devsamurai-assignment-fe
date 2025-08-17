@@ -1,7 +1,5 @@
-"use client"
-
-import { ChevronsUpDown, Plus } from "lucide-react"
-import * as React from "react"
+import * as React from "react";
+import { Check, ChevronsUpDown, Ellipsis, Plus, Settings, User } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -11,29 +9,43 @@ import {
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+} from "@/components/ui/command";
 
-export function TeamSwitcher({
-  teams,
-}: {
-  teams: {
-    name: string
-    logo: React.ElementType
-    plan: string
-  }[]
-}) {
-  const { isMobile } = useSidebar()
-  const [activeTeam, setActiveTeam] = React.useState(teams[0])
+type Org = {
+  label: string;
+  value: string;
+  icon?: React.ReactNode;
+};
 
-  if (!activeTeam) {
-    return null
-  }
+const organizations: Org[] = [
+  {
+    label: "company",
+    value: "company",
+    icon: (
+      <div className="flex size-6 items-center justify-center rounded-md border border-neutral-200 bg-neutral-100 font-medium text-neutral-500 dark:border-neutral-700 dark:bg-neutral-900">
+        C
+      </div>
+    ),
+  }, 
+];
+
+export function TeamSwitcher() {
+  const [selectedOrg, setSelectedOrg] = React.useState<Org>(organizations[0]);
 
   return (
     <SidebarMenu>
@@ -41,51 +53,78 @@ export function TeamSwitcher({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
-              size='lg'
-              className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
+              size="default"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground !py-4 cursor-pointer"
             >
-              <div className='bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg'>
-                <activeTeam.logo className='size-4' />
+              <span className="relative flex shrink-0 overflow-hidden aspect-square size-6 rounded-md">
+                {selectedOrg.icon}
+              </span>
+              <div className="grid flex-1 text-left text-sm leading-tight">
+                <span className="truncate font-bold">{selectedOrg.label}</span>
               </div>
-              <div className='grid flex-1 text-left text-sm leading-tight'>
-                <span className='truncate font-medium'>{activeTeam.name}</span>
-                <span className='truncate text-xs'>{activeTeam.plan}</span>
-              </div>
-              <ChevronsUpDown className='ml-auto' />
+              <ChevronsUpDown className="ml-auto" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className='w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg'
-            align='start'
-            side={isMobile ? "bottom" : "right"}
+            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+            align="start"
+            side="bottom"
             sideOffset={4}
           >
-            <DropdownMenuLabel className='text-muted-foreground text-xs'>
-              Teams
-            </DropdownMenuLabel>
-            {teams.map((team, index) => (
-              <DropdownMenuItem
-                key={team.name}
-                onClick={() => setActiveTeam(team)}
-                className='gap-2 p-2'
-              >
-                <div className='flex size-6 items-center justify-center rounded-md border'>
-                  <team.logo className='size-3.5 shrink-0' />
-                </div>
-                {team.name}
-                <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
-              </DropdownMenuItem>
-            ))}
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className='gap-2 p-2'>
-              <div className='flex size-6 items-center justify-center rounded-md border bg-transparent'>
-                <Plus className='size-4' />
-              </div>
-              <div className='text-muted-foreground font-medium'>Add team</div>
-            </DropdownMenuItem>
+            <Command>
+              <CommandInput placeholder="Search..." />
+              <CommandList>
+                <CommandEmpty>No organization found.</CommandEmpty>
+                <CommandGroup>
+                  {organizations.map((org) => (
+                    <CommandItem
+                      key={org.value}
+                      onSelect={() => {
+                        setSelectedOrg(org);
+                      }}
+                    >
+                      <div className="flex items-center gap-2">
+                        {org.icon}
+                        {org.label}
+                      </div>
+                      {selectedOrg.value === org.value && (
+                        <Check className="ml-auto h-4 w-4" />
+                      )}
+                    </CommandItem>
+                  ))}
+                  <CommandItem>
+                    <div className="flex items-center gap-2">
+                      <Ellipsis className="h-4 w-4" />
+                      All organizations
+                    </div>
+                  </CommandItem>
+                </CommandGroup>
+                <CommandSeparator />
+                <CommandGroup>
+                  <CommandItem>
+                    <div className="flex items-center gap-2">
+                      <User className="h-4 w-4" />
+                      Account settings
+                    </div>
+                  </CommandItem>
+                  <CommandItem>
+                    <div className="flex items-center gap-2">
+                      <Settings className="h-4 w-4" />
+                      Organization settings
+                    </div>
+                  </CommandItem>
+                  <CommandItem>
+                    <div className="flex items-center gap-2">
+                      <Plus className="h-4 w-4" />
+                      Add organization
+                    </div>
+                  </CommandItem>
+                </CommandGroup>
+              </CommandList>
+            </Command>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  )
+  );
 }

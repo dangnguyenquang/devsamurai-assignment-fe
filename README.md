@@ -1,69 +1,64 @@
-# React + TypeScript + Vite
+# FullstackAssignment-FE
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**FullstackAssignment-FE** is a frontend project built with React, TypeScript, and Vite, providing a modern user interface for data management and analytics systems. The application supports authentication, user management, chart visualization, and many other features.
 
-Currently, two official plugins are available:
+## Technologies Used
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **React**: UI library for building user interfaces.
+- **TypeScript**: A superset of JavaScript that adds static typing.
+- **Vite**: Fast frontend build and development tool.
+- **Redux Toolkit**: State management for the application.
+- **React Router**: Client-side routing.
+- **Recharts**: Charting library for React.
+- **Tailwind CSS**: Utility-first CSS framework for styling (if used).
+- **Lucide-react**: SVG icon library for React.
+- **Zod**: Form validation and schema definition.
+- **ESLint**: Code linting and formatting.
 
-## Expanding the ESLint configuration
+## Installation
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+1. **Requirements:**
+   - Node.js >= 16.x
+   - npm >= 8.x
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+2. **Install dependencies:**
+   ```sh
+   npm install
+   ```
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+3. **Run development server:**
+   ```sh
+   npm run dev
+   ```
+   The app will be available at [http://localhost:5173](http://localhost:5173) (or the port specified by Vite).
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+4. **Build for production:**
+   ```sh
+   npm run build
+   ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+5. **Run lint:**
+   ```sh
+   npm run lint
+   ```
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Testing
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- **Manual testing:** Access features such as registration, login, dashboard, and charts to verify functionality.
+- **Automated testing:** (If available) Run:
+  ```sh
+  npm test
+  ```
+  or
+  ```sh
+  npm run test
+  ```
+
+## Assumptions
+
+- The application uses pre-configured backend APIs (update endpoints if needed).
+- Some UI components may be custom or use third-party libraries.
+- CI/CD, automated testing, or deployment are not integrated yet (should be added if required).
+- Environment variables are configured in the `.env` file.
+
+---
